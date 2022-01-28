@@ -3,11 +3,100 @@
  */
 package wazirx.connector.java;
 
+import com.google.gson.JsonObject;
+
 public class Client extends BaseClient {
 	public Client(final String apiKey, final String secretKey) {
 		super(apiKey, secretKey);
 	}
-    public boolean someLibraryMethod() {
-        return true;
-    }
+
+	//	ping
+	public JsonObject getPing() throws Exception {
+		return this.call("ping", null);
+	}
+
+	//	time
+	public JsonObject getTime() throws Exception {
+		return this.call("time", null);
+	}
+
+	//	system_status
+	public JsonObject getSystemStatus() throws Exception {
+		return this.call("system_status", null);
+	}
+
+	//	exchange_info
+	public JsonObject getExchangeInfo() throws Exception {
+		return this.call("exchange_info", null);
+	}
+
+	//	tickers
+	public JsonObject getTickers() throws Exception {
+		return this.call("tickers", null);
+	}
+
+	//	ticker
+	public JsonObject getTicker() throws Exception {
+		return this.call("ticker", null);
+	}
+
+	//	depth
+	public JsonObject getDepth() throws Exception {
+		return this.call("depth", null);
+	}
+
+	//	trades
+	public JsonObject getTrades() throws Exception {
+		return this.call("trades", null);
+	}
+
+	//	historical_trades
+	public JsonObject getHistoricalTrades() throws Exception {
+		return this.call("historical_trades", null);
+	}
+
+	//	create_order
+	public JsonObject createOrder() throws Exception {
+		return this.call("create_order", null);
+	}
+
+	//	create_test_order
+	public JsonObject createTestOrder() throws Exception {
+		return this.call("create_test_order", null);
+	}
+
+	//	query_order
+	public JsonObject queryOrder() throws Exception {
+		return this.call("query_order", null);
+	}
+
+	//	cancel_order
+	public JsonObject cancelOrder() throws Exception {
+		return this.call("cancel_order", null);
+	}
+
+	//	open_orders
+	public JsonObject openOrders() throws Exception {
+		return this.call("open_orders", null);
+	}
+
+	//	cancel_open_orders
+	public JsonObject cancelOpenOrders() throws Exception {
+		return this.call("cancel_open_orders", null);
+	}
+
+	//	all_orders
+	public JsonObject getAllOrders() throws Exception {
+		return this.call("all_orders", null);
+	}
+
+	//	account_info
+	public JsonObject getAccountInfo() throws Exception {
+		return this.call("account_info", null);
+	}
+
+	//	funds_info
+	public JsonObject getFundsInfo() throws Exception {
+		return this.call("funds_info", null);
+	}
 }

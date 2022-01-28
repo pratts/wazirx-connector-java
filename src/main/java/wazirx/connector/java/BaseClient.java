@@ -57,7 +57,7 @@ public class BaseClient {
 		return apiDetails;
 	}
 
-	public APIDetails getAPIDetails(String name) {
+	public APIDetails getAPIDetailsForName(String name) {
 		return this.apiDetails.get(name);
 	}
 	
@@ -88,7 +88,11 @@ public class BaseClient {
 		return URLEncodedUtils.format(params, "UTF-8");
 	}
 	
-	public JsonObject call(APIDetails detail, Map<String, Object> params) throws Exception {
+	public JsonObject call(String name, Map<String, Object> params) throws Exception {
+		APIDetails detail = this.getAPIDetailsForName(name);
+		if(detail == null) {
+			throw new Exception("API Not found");
+		}
 		List<NameValuePair> paramsValuePairs = this.getValuePairs(params);
 		JsonObject response = null;
 		if(detail.getClient() == "signed") {
