@@ -18,9 +18,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -75,7 +75,7 @@ public class BaseClient {
 		return headersList;
 	}
 	
-	public String generateSignature(Map<String, Object> params) {
+	public String generateSignature(List<NameValuePair> params) {
 		String encodedParams = this.getEncodedParams(params);
 		String hmac = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, this.secretKey).hmacHex(encodedParams);
 	    return hmac;
@@ -89,29 +89,30 @@ public class BaseClient {
 		return pairs;
 	}
 	
-	public String getEncodedParams(Map<String, Object> params) {
-		return URLEncodedUtils.format(this.getValuePairs(params), "UTF-8");
+	public String getEncodedParams(List<NameValuePair> params) {
+		return URLEncodedUtils.format(params, "UTF-8");
 	}
 	
 	public JsonObject call(APIDetails detail, Map<String, Object> params) throws Exception {
+		List<NameValuePair> paramsValuePairs = this.getValuePairs(params);
 		JsonObject response = null;
 		if(detail.getClient() == "signed") {
-			String signature = this.generateSignature(params);
+			String signature = this.generateSignature(paramsValuePairs);
 			params.put("signature", signature);
 		}
 		switch(detail.getAction()) {
-			case GET: response = this.get(detail, params);
+			case GET: response = this.get(detail, paramsValuePairs);
 					break;
-			case POST: response = this.post(detail, params);
+			case POST: response = this.post(detail, paramsValuePairs);
 					break;
-			case DELETE: response = this.delete(detail, params);
+			case DELETE: response = this.delete(detail, paramsValuePairs);
 				break;
 			default: throw new Exception("Invalid API method");
 		}
 		return response;
 	}
 	
-	public JsonObject get(APIDetails detail, Map<String, Object> params) throws IOException, URISyntaxException {
+	public JsonObject get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
@@ -122,15 +123,7 @@ public class BaseClient {
             request.setURI(uri);
 
             System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
-            final ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-				@Override
-				public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					return EntityUtils.toString(response.getEntity());
-				}
-            };
-            final String responseBody = httpclient.execute(request, responseHandler);
-            JsonObject response = new Gson().fromJson(responseBody, JsonObject.class);
-            return response;
+            return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
 			throw e;
@@ -140,27 +133,17 @@ public class BaseClient {
 		}
 	}
 
-	public JsonObject post(APIDetails detail, Map<String, Object> params) throws IOException, URISyntaxException {
+	public JsonObject post(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
 		try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost request = new HttpPost(url);
             request.setHeaders((Header[])headers.toArray());
-            request.setEntity(new UrlEncodedFormEntity(this.getValuePairs(params)));
-            URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
-            request.setURI(uri);
+            request.setEntity(new UrlEncodedFormEntity(params));
 
             System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
-            final ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-				@Override
-				public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					return EntityUtils.toString(response.getEntity());
-				}
-            };
-            final String responseBody = httpclient.execute(request, responseHandler);
-            JsonObject response = new Gson().fromJson(responseBody, JsonObject.class);
-            return response;
+            return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
 			throw e;
@@ -170,26 +153,18 @@ public class BaseClient {
 		}
 	}
 
-	public JsonObject delete(APIDetails detail, Map<String, Object> params) throws IOException, URISyntaxException {
+	public JsonObject delete(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
 		try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            final HttpRequestBase httpget = new HttpGet(url);
-            httpget.setHeaders((Header[])headers.toArray());
+            final HttpDelete request = new HttpDelete(url);
+            request.setHeaders((Header[])headers.toArray());
             URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
-            httpget.setURI(uri);
+            request.setURI(uri);
 
-            System.out.println("Executing request " + httpget.getMethod() + " " + httpget.getURI());
-            final ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-				@Override
-				public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					return EntityUtils.toString(response.getEntity());
-				}
-            };
-            final String responseBody = httpclient.execute(httpget, responseHandler);
-            JsonObject response = new Gson().fromJson(responseBody, JsonObject.class);
-            return response;
+            System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
+            return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
 			throw e;
