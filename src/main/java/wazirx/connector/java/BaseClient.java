@@ -13,10 +13,8 @@ import java.util.Map;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -27,7 +25,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -49,12 +46,10 @@ public class BaseClient {
 	}
 	
 	public Map<String, APIDetails> readApiMapperJson() {
-		System.out.println("Reading json file");
 		Map<String, APIDetails> apiDetails = null;
 	    try (Reader reader = new InputStreamReader(this.getClass().getResourceAsStream("/api_mapper.json"))) {
 	    	Type apiDetailsType = new TypeToken<Map<String, APIDetails>>() {}.getType();
 	    	apiDetails = new Gson().fromJson(reader, apiDetailsType);
-	        System.out.println(apiDetails);
 	        return apiDetails;
 	    } catch (IOException e) {
 	        e.printStackTrace();
@@ -121,8 +116,6 @@ public class BaseClient {
             request.setHeaders((Header[])headers.toArray());
             URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
             request.setURI(uri);
-
-            System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
             return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -141,8 +134,6 @@ public class BaseClient {
             final HttpPost request = new HttpPost(url);
             request.setHeaders((Header[])headers.toArray());
             request.setEntity(new UrlEncodedFormEntity(params));
-
-            System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
             return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -162,8 +153,6 @@ public class BaseClient {
             request.setHeaders((Header[])headers.toArray());
             URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
             request.setURI(uri);
-
-            System.out.println("Executing request " + request.getMethod() + " " + request.getURI());
             return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
 			e.printStackTrace();
