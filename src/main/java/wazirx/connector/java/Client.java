@@ -3,6 +3,8 @@
  */
 package wazirx.connector.java;
 
+import java.util.Map;
+
 import com.google.gson.JsonObject;
 
 public class Client extends BaseClient {
@@ -11,48 +13,56 @@ public class Client extends BaseClient {
 	}
 
 	//	ping
-	public JsonObject getPing() throws Exception {
+	public JsonObject ping() throws Exception {
 		return this.call("ping", null);
 	}
 
 	//	time
-	public JsonObject getTime() throws Exception {
+	public JsonObject time() throws Exception {
 		return this.call("time", null);
 	}
 
 	//	system_status
-	public JsonObject getSystemStatus() throws Exception {
+	public JsonObject systemStatus() throws Exception {
 		return this.call("system_status", null);
 	}
 
 	//	exchange_info
-	public JsonObject getExchangeInfo() throws Exception {
+	public JsonObject exchangeInfo() throws Exception {
 		return this.call("exchange_info", null);
 	}
 
 	//	tickers
-	public JsonObject getTickers() throws Exception {
+	public JsonObject tickers() throws Exception {
 		return this.call("tickers", null);
 	}
 
 	//	ticker
-	public JsonObject getTicker() throws Exception {
-		return this.call("ticker", null);
+	public JsonObject ticker(String symbol) throws Exception {
+		Map<String, Object> params = Map.of("symbol", symbol);
+		return this.call("ticker", params);
 	}
 
 	//	depth
-	public JsonObject getDepth() throws Exception {
-		return this.call("depth", null);
+	public JsonObject depth(String symbol, String limit) throws Exception {
+		Map<String, Object> params = Map.of("symbol", symbol, "limit", limit);
+		return this.call("depth", params);
 	}
 
 	//	trades
-	public JsonObject getTrades() throws Exception {
-		return this.call("trades", null);
+	public JsonObject trades(String symbol, String limit) throws Exception {
+		Map<String, Object> params = Map.of("symbol", symbol, "limit", limit);
+		return this.call("trades", params);
 	}
 
 	//	historical_trades
-	public JsonObject getHistoricalTrades() throws Exception {
-		return this.call("historical_trades", null);
+	public JsonObject historicalTrades(String symbol, String limit, int recvWindow) throws Exception {
+		Map<String, Object> params = Map.of(
+				"symbol", symbol,
+				"limit", limit,
+				"recvWindow", recvWindow,
+				"timestamp", System.currentTimeMillis());
+		return this.call("historical_trades", params);
 	}
 
 	//	create_order
@@ -86,17 +96,17 @@ public class Client extends BaseClient {
 	}
 
 	//	all_orders
-	public JsonObject getAllOrders() throws Exception {
+	public JsonObject allOrders() throws Exception {
 		return this.call("all_orders", null);
 	}
 
 	//	account_info
-	public JsonObject getAccountInfo() throws Exception {
+	public JsonObject accountInfo() throws Exception {
 		return this.call("account_info", null);
 	}
 
 	//	funds_info
-	public JsonObject getFundsInfo() throws Exception {
+	public JsonObject fundsInfo() throws Exception {
 		return this.call("funds_info", null);
 	}
 }
