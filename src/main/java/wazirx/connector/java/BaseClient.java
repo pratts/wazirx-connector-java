@@ -93,11 +93,14 @@ public class BaseClient {
 		if(detail == null) {
 			throw new Exception("API Not found");
 		}
+		if(params == null) {
+			params = Map.of();
+		}
 		List<NameValuePair> paramsValuePairs = this.getValuePairs(params);
 		JsonObject response = null;
 		if(detail.getClient() == "signed") {
 			String signature = this.generateSignature(paramsValuePairs);
-			params.put("signature", signature);
+			paramsValuePairs.add(new BasicNameValuePair("signature", signature));
 		}
 		switch(detail.getAction()) {
 			case GET: response = this.get(detail, paramsValuePairs);
