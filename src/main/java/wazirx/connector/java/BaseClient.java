@@ -31,7 +31,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class BaseClient {
-	private final String BASE_URL = "https://api.wazirx.com";
+	private final String BASE_URL = "https://api.wazirx.com/sapi";
 	private String apiKey = null;
 	private String secretKey = null;
 	private Map<String, APIDetails> apiDetails = null;
@@ -114,14 +114,23 @@ public class BaseClient {
 		return response;
 	}
 	
+	private Header[] getHeaderArray(List<Header> headerList) {
+		Header[] headersArr = new Header[headerList.size()];
+		for(int i=0; i<headerList.size(); i++) {
+			headersArr[i] = headerList.get(i);
+		}
+		return headersArr;
+	}
+
 	public JsonObject get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
 		try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpGet request = new HttpGet(url);
-            request.setHeaders((Header[])headers.toArray());
-            URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
+            request.setHeaders(this.getHeaderArray(headers));
+            String paramsStr = this.getEncodedParams(params);
+            URI uri = new URIBuilder(url+ (paramsStr.length() != 0 ? "?"+paramsStr : "")).build();
             request.setURI(uri);
             return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {
