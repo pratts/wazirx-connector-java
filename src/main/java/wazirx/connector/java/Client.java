@@ -102,12 +102,18 @@ public class Client extends BaseClient {
 	}
 
 	//	account_info
-	public JsonElement accountInfo() throws Exception {
-		return this.call("account_info", null);
+	public JsonElement accountInfo(int recvWindow) throws Exception {
+		Map<String, Object> params = Map.of(
+				"recvWindow", recvWindow,
+				"timestamp", System.currentTimeMillis());
+		return this.call("account_info", params);
 	}
 
 	//	funds_info
-	public JsonElement fundsInfo() throws Exception {
-		return this.call("funds_info", null);
+	public JsonElement fundsInfo(int recvWindow) throws Exception {
+		Map<String, Object> params = Map.of(
+				"recvWindow", recvWindow,
+				"timestamp", System.currentTimeMillis());
+		return this.call("funds_info", params);
 	}
 }
