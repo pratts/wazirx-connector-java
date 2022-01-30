@@ -6,12 +6,13 @@ import org.apache.http.HttpEntity;
 import org.apache.http.impl.client.AbstractResponseHandler;
 import org.apache.http.util.EntityUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
-public class WazirxResponseHandler extends AbstractResponseHandler<JsonObject>{
+public class WazirxResponseHandler extends AbstractResponseHandler<JsonElement>{
 	@Override
-	public JsonObject handleEntity(HttpEntity entity) throws IOException {
-		return new Gson().fromJson(EntityUtils.toString(entity), JsonObject.class);
+	public JsonElement handleEntity(HttpEntity entity) throws IOException {
+		String responseString = EntityUtils.toString(entity);
+		return JsonParser.parseString(responseString);
 	}
 }
