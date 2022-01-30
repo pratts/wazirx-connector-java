@@ -64,7 +64,7 @@ public class BaseClient {
 	public List<Header> getHeaders(String clientType) {
 		List<Header> headersList = new ArrayList<Header>();
 		headersList.add(new BasicHeader("Content-Type", "application/x-www-form-urlencoded"));
-		if(clientType == "signed") {
+		if(clientType.equalsIgnoreCase("signed")) {
 			headersList.add(new BasicHeader("X-Api-Key", this.apiKey));
 		}
 		return headersList;
@@ -98,7 +98,7 @@ public class BaseClient {
 		}
 		List<NameValuePair> paramsValuePairs = this.getValuePairs(params);
 		JsonElement response = null;
-		if(detail.getClient() == "signed") {
+		if(detail.getClient().equalsIgnoreCase("signed")) {
 			String signature = this.generateSignature(paramsValuePairs);
 			paramsValuePairs.add(new BasicNameValuePair("signature", signature));
 		}

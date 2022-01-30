@@ -57,7 +57,7 @@ public class Client extends BaseClient {
 	}
 
 	//	historical_trades
-	public JsonElement historicalTrades(String symbol, String limit, int recvWindow) throws Exception {
+	public JsonElement historicalTrades(String symbol, int limit, int recvWindow) throws Exception {
 		Map<String, Object> params = Map.of(
 				"symbol", symbol,
 				"limit", limit,
