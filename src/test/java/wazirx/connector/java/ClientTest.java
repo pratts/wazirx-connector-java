@@ -7,12 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.google.gson.JsonElement;
-
 public class ClientTest {
     @Test public void testSomeLibraryMethod() throws Exception {
-        Client classUnderTest = new Client("test", "test");
-        assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
         assertTrue("someLibraryMethod should return 'true'", true);
     }
 }
