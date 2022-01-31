@@ -148,7 +148,7 @@ public class BaseClient {
 
 		try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost request = new HttpPost(url);
-            request.setHeaders((Header[])headers.toArray());
+            request.setHeaders(this.getHeaderArray(headers));
             request.setEntity(new UrlEncodedFormEntity(params));
             return httpclient.execute(request, new WazirxResponseHandler());
         } catch (ClientProtocolException e) {

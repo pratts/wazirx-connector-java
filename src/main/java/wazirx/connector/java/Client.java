@@ -116,4 +116,12 @@ public class Client extends BaseClient {
 				"timestamp", System.currentTimeMillis());
 		return this.call("funds_info", params);
 	}
+
+	//	create_auth_token
+	public JsonElement createAuthToken(int recvWindow) throws Exception {
+		Map<String, Object> params = Map.of(
+				"recvWindow", recvWindow,
+				"timestamp", System.currentTimeMillis());
+		return this.call("create_auth_token", params);
+	}
 }
