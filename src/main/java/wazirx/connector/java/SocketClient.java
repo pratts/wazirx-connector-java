@@ -13,10 +13,12 @@ public class SocketClient extends WebSocketClient {
 	private Client client = null;
 	private PingMessage pingMessage = null;
 	private boolean sendPing = false;
+	private IMessageHandler messageHandler = null;
 	
-	public SocketClient(final String apiKey, final String secretKey) throws URISyntaxException {
+	public SocketClient(final String apiKey, final String secretKey, IMessageHandler messageHandler) throws URISyntaxException {
 		super(new URI(BASE_URL));
 		this.client = new Client(apiKey, secretKey);
+		this.messageHandler = messageHandler;
 	}
 
 	@Override
@@ -31,6 +33,9 @@ public class SocketClient extends WebSocketClient {
 	public void onMessage(String message) {
 		// TODO Auto-generated method stub
 		
+		if(this.messageHandler != null) {
+			this.messageHandler.handleMessage(message);
+		}
 	}
 
 	@Override
