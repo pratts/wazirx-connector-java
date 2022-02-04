@@ -12,18 +12,16 @@ public class SocketClient extends WebSocketClient {
 	private final static String BASE_URL = "wss://stream.wazirx.com/stream";
 	private Client client = null;
 	private PingMessage pingMessage = null;
+	private boolean sendPing = false;
 	
 	public SocketClient(final String apiKey, final String secretKey) throws URISyntaxException {
 		super(new URI(BASE_URL));
 		this.client = new Client(apiKey, secretKey);
 	}
-	
-	public void connect() {
-        super.connect();
-	}
 
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
+		this.sendPing = true;
 		this.pingMessage = new PingMessage(this);
         Thread t = new Thread(this.pingMessage);
         t.start();
@@ -38,13 +36,13 @@ public class SocketClient extends WebSocketClient {
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
-		
+		this.sendPing = false;
 	}
 
 	@Override
 	public void onError(Exception ex) {
 		// TODO Auto-generated method stub
-		
+		this.sendPing = false;
 	}
 	
 	private class PingMessage implements Runnable {
@@ -54,11 +52,10 @@ public class SocketClient extends WebSocketClient {
 		}
 		
 		public void run() {
-			this.socketClient.sendPing();
 			JsonObject pingMessage = new JsonObject();
 			pingMessage.addProperty("event", "ping");
-			while(true) {
-				this.socketClient.send(pingMessage.getAsString());
+			while(this.socketClient.sendPing) {
+				this.socketClient.send(pingMessage.toString());
 				try {
 					Thread.sleep(5 * 60 * 1000);
 				} catch (InterruptedException e) {
