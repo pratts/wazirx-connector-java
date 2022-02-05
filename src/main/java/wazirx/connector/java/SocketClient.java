@@ -7,15 +7,18 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import wazirx.connector.java.handlers.IMessageHandler;
+
 public class SocketClient extends WebSocketClient {
 	private final static String BASE_URL = "wss://stream.wazirx.com/stream";
 	private Client client = null;
 	private PingMessage pingMessage = null;
 	private boolean sendPing = false;
 	private IMessageHandler messageHandler = null;
+	private JsonObject authToken = null;
 	
 	public SocketClient(final String apiKey, final String secretKey, IMessageHandler messageHandler) throws URISyntaxException {
 		super(new URI(BASE_URL));
@@ -48,45 +51,72 @@ public class SocketClient extends WebSocketClient {
 		this.sendPing = false;
 	}
 	
-	public void subscribe(String[] streams) {
+	private void sendMessage(String streamName, String[] streams, boolean isAuth) throws Exception {
 		JsonObject message = new JsonObject();
-		message.addProperty("event", "subscribe");
+		message.addProperty("event", streamName);
 		JsonArray streamsList = new JsonArray();
 		for(int i=0; i<streams.length; i++) {
 			streamsList.add(streams[i]);
 		}
 		message.add("streams", streamsList);
-		this.send(message.toString());
-	}
-
-	public void unsubscribe(String[] streams) {
-		JsonObject message = new JsonObject();
-		message.addProperty("event", "unsubscribe");
-		JsonArray streamsList = new JsonArray();
-		for(int i=0; i<streams.length; i++) {
-			streamsList.add(streams[i]);
-		}
-		message.add("streams", streamsList);
-		this.send(message.toString());
-	}
-
-	private class PingMessage implements Runnable {
-		private SocketClient socketClient = null;
-		public PingMessage(SocketClient client) {
-			this.socketClient = client;
-		}
-		
-		public void run() {
-			JsonObject pingMessage = new JsonObject();
-			pingMessage.addProperty("event", "ping");
-			while(this.socketClient.sendPing) {
-				this.socketClient.send(pingMessage.toString());
-				try {
-					Thread.sleep(5 * 60 * 1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+		if(isAuth && this.authToken == null) {
+			boolean isNewTokenNeeded = true;
+			if(this.authToken != null) {
+				int timeout = this.authToken.get("timeout_duration").getAsInt();
+				long initTime = this.authToken.get("timestamp").getAsLong();
+				if((System.currentTimeMillis() - initTime) > timeout) {
+					this.authToken = null;
+				} else {
+					isNewTokenNeeded = false;
 				}
 			}
+			if(isNewTokenNeeded) {
+				JsonElement authData = this.client.createAuthToken(60000);
+				JsonObject auth = authData.getAsJsonObject();
+				if(auth.has("auth_key")) {
+					auth.addProperty("timestamp", System.currentTimeMillis());
+					message.add("auth_key", auth.get("auth_key"));
+				}
+				this.authToken = auth;
+			}
 		}
+		this.send(message.toString());
+	}
+
+	private void subscribe(String[] streams, boolean isAuth) throws Exception {
+		this.sendMessage("subscribe", streams, isAuth);
+	}
+
+	public void unsubscribe(String[] streams, boolean isAuth) throws Exception {
+		this.sendMessage("unsubscribe", streams, isAuth);
+	}
+
+	public boolean isSendPing() {
+		return this.sendPing;
+	}
+
+	public void subToSymbolTrade(String symbolName) throws Exception {
+		this.subscribe(new String[] {symbolName+"@trades"}, false);
+	}
+
+	public void subToMarket() throws Exception {
+		this.subscribe(new String[] {"!ticker@arr"}, false);
+	}
+
+	public void subToMarketDepth(String symbolName) throws Exception {
+		this.subscribe(new String[] {symbolName+"@depth"}, false);
+	}
+
+	public void subToAccountUpdate() throws Exception {
+		this.subscribe(new String[] {"outboundAccountPosition"}, true);
+	}
+
+	public void subToOrderUpdate() throws Exception {
+		this.subscribe(new String[] {"orderUpdate"}, true);
+	}
+
+	public void subToOwnTrade() throws Exception {
+		this.subscribe(new String[] {"ownTrade"}, true);
+	}
 	}
 }
