@@ -51,6 +51,16 @@ public class SocketClient extends WebSocketClient {
 		this.sendPing = false;
 	}
 	
+	private JsonObject getAuthToken() throws Exception {
+		JsonElement authData = this.client.createAuthToken(60000);
+		JsonObject auth = authData.getAsJsonObject();
+		if(!auth.has("auth_key")) {
+			throw new Exception("No authentication token provided !");
+		}
+		auth.addProperty("timestamp", System.currentTimeMillis());
+		return auth;
+	}
+
 	private void sendMessage(String streamName, String[] streams, boolean isAuth) throws Exception {
 		JsonObject message = new JsonObject();
 		message.addProperty("event", streamName);
@@ -59,26 +69,19 @@ public class SocketClient extends WebSocketClient {
 			streamsList.add(streams[i]);
 		}
 		message.add("streams", streamsList);
-		if(isAuth && this.authToken == null) {
+		if(isAuth) {
 			boolean isNewTokenNeeded = true;
 			if(this.authToken != null) {
 				int timeout = this.authToken.get("timeout_duration").getAsInt();
 				long initTime = this.authToken.get("timestamp").getAsLong();
-				if((System.currentTimeMillis() - initTime) > timeout) {
-					this.authToken = null;
-				} else {
+				if((System.currentTimeMillis() - initTime) < (timeout*1000)) {
 					isNewTokenNeeded = false;
 				}
 			}
 			if(isNewTokenNeeded) {
-				JsonElement authData = this.client.createAuthToken(60000);
-				JsonObject auth = authData.getAsJsonObject();
-				if(auth.has("auth_key")) {
-					auth.addProperty("timestamp", System.currentTimeMillis());
-					message.add("auth_key", auth.get("auth_key"));
-				}
-				this.authToken = auth;
+				this.authToken = this.getAuthToken();
 			}
+			message.add("auth_key", this.authToken.get("auth_key"));
 		}
 		this.send(message.toString());
 	}
