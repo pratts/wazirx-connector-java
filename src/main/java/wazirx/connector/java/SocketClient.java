@@ -121,5 +121,4 @@ public class SocketClient extends WebSocketClient {
 	public void subToOwnTrade() throws Exception {
 		this.subscribe(new String[] {"ownTrade"}, true);
 	}
-	}
 }
