@@ -30,6 +30,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import wazirx.connector.java.handlers.WazirxResponseHandler;
+
 public class BaseClient {
 	private final String BASE_URL = "https://api.wazirx.com/sapi";
 	private String apiKey = null;

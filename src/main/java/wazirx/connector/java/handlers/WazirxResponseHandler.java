@@ -1,4 +1,4 @@
-package wazirx.connector.java;
+package wazirx.connector.java.handlers;
 
 import java.io.IOException;
 
