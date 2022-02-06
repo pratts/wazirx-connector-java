@@ -49,7 +49,7 @@ public class Client extends BaseClient {
 	}
 
 	//	trades
-	public String trades(String symbol, String limit) throws Exception {
+	public String trades(String symbol, int limit) throws Exception {
 		Map<String, Object> params = Map.of("symbol", symbol, "limit", limit);
 		return this.call("trades", params);
 	}
