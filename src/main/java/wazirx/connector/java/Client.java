@@ -55,11 +55,11 @@ public class Client extends BaseClient {
 	}
 
 	//	historical_trades
-	public String historicalTrades(String symbol, int limit, int recvWindow) throws Exception {
+	public String historicalTrades(String symbol, int limit) throws Exception {
 		Map<String, Object> params = Map.of(
 				"symbol", symbol,
 				"limit", limit,
-				"recvWindow", recvWindow,
+				"recvWindow", 10000,
 				"timestamp", System.currentTimeMillis());
 		return this.call("historical_trades", params);
 	}
@@ -100,25 +100,25 @@ public class Client extends BaseClient {
 	}
 
 	//	account_info
-	public String accountInfo(int recvWindow) throws Exception {
+	public String accountInfo() throws Exception {
 		Map<String, Object> params = Map.of(
-				"recvWindow", recvWindow,
+				"recvWindow", 20000,
 				"timestamp", System.currentTimeMillis());
 		return this.call("account_info", params);
 	}
 
 	//	funds_info
-	public String fundsInfo(int recvWindow) throws Exception {
+	public String fundsInfo() throws Exception {
 		Map<String, Object> params = Map.of(
-				"recvWindow", recvWindow,
+				"recvWindow", 20000,
 				"timestamp", System.currentTimeMillis());
 		return this.call("funds_info", params);
 	}
 
 	//	create_auth_token
-	public String createAuthToken(int recvWindow) throws Exception {
+	public String createAuthToken() throws Exception {
 		Map<String, Object> params = Map.of(
-				"recvWindow", recvWindow,
+				"recvWindow", 20000,
 				"timestamp", System.currentTimeMillis());
 		return this.call("create_auth_token", params);
 	}

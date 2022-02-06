@@ -52,7 +52,7 @@ public class SocketClient extends WebSocketClient {
 	}
 	
 	private JsonObject getAuthToken() throws Exception {
-		String authData = this.client.createAuthToken(60000);
+		String authData = this.client.createAuthToken();
 		JsonObject auth = JsonParser.parseString(authData).getAsJsonObject();
 		if(!auth.has("auth_key")) {
 			throw new Exception("No authentication token provided !");

@@ -39,16 +39,16 @@ client.depth(symbolName, limit)
 client.trades(symbolName, limit)
 
 // Old trade lookup (Market Data)
-client.historicalTrades(symbolName, limit, 10000)
+client.historicalTrades(symbolName, limit)
 
 // Account Information
-client.accountInfo(10000)
+client.accountInfo()
 
 // Get funds info
-client.fundsInfo(10000)
+client.fundsInfo()
 
 // Create authentication token for websocket connection
-client.createAuthToken(10000)
+client.createAuthToken()
 
 ```
 
