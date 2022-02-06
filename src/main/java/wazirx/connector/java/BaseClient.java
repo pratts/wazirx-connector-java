@@ -27,7 +27,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import wazirx.connector.java.handlers.WazirxResponseHandler;
@@ -90,7 +89,7 @@ public class BaseClient {
 		return URLEncodedUtils.format(params, "UTF-8");
 	}
 	
-	public JsonElement call(String name, Map<String, Object> params) throws Exception {
+	public String call(String name, Map<String, Object> params) throws Exception {
 		APIDetails detail = this.getAPIDetailsForName(name);
 		if(detail == null) {
 			throw new Exception("API Not found");
@@ -99,7 +98,7 @@ public class BaseClient {
 			params = Map.of();
 		}
 		List<NameValuePair> paramsValuePairs = this.getValuePairs(params);
-		JsonElement response = null;
+		String response = null;
 		if(detail.getClient().equalsIgnoreCase("signed")) {
 			String signature = this.generateSignature(paramsValuePairs);
 			paramsValuePairs.add(new BasicNameValuePair("signature", signature));
@@ -124,7 +123,7 @@ public class BaseClient {
 		return headersArr;
 	}
 
-	public JsonElement get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	public String get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
@@ -144,7 +143,7 @@ public class BaseClient {
 		}
 	}
 
-	public JsonElement post(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	public String post(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
@@ -162,7 +161,7 @@ public class BaseClient {
 		}
 	}
 
-	public JsonElement delete(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	public String delete(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 

@@ -5,59 +5,57 @@ package wazirx.connector.java;
 
 import java.util.Map;
 
-import com.google.gson.JsonElement;
-
 public class Client extends BaseClient {
 	public Client(final String apiKey, final String secretKey) {
 		super(apiKey, secretKey);
 	}
 
 	//	ping
-	public JsonElement ping() throws Exception {
+	public String ping() throws Exception {
 		return this.call("ping", null);
 	}
 
 	//	time
-	public JsonElement time() throws Exception {
+	public String time() throws Exception {
 		return this.call("time", null);
 	}
 
 	//	system_status
-	public JsonElement systemStatus() throws Exception {
+	public String systemStatus() throws Exception {
 		return this.call("system_status", null);
 	}
 
 	//	exchange_info
-	public JsonElement exchangeInfo() throws Exception {
+	public String exchangeInfo() throws Exception {
 		return this.call("exchange_info", null);
 	}
 
 	//	tickers
 	// handle case for array response
-	public JsonElement tickers() throws Exception {
+	public String tickers() throws Exception {
 		return this.call("tickers", null);
 	}
 
 	//	ticker
-	public JsonElement ticker(String symbol) throws Exception {
+	public String ticker(String symbol) throws Exception {
 		Map<String, Object> params = Map.of("symbol", symbol);
 		return this.call("ticker", params);
 	}
 
 	//	depth
-	public JsonElement depth(String symbol, int limit) throws Exception {
+	public String depth(String symbol, int limit) throws Exception {
 		Map<String, Object> params = Map.of("symbol", symbol, "limit", limit);
 		return this.call("depth", params);
 	}
 
 	//	trades
-	public JsonElement trades(String symbol, String limit) throws Exception {
+	public String trades(String symbol, String limit) throws Exception {
 		Map<String, Object> params = Map.of("symbol", symbol, "limit", limit);
 		return this.call("trades", params);
 	}
 
 	//	historical_trades
-	public JsonElement historicalTrades(String symbol, int limit, int recvWindow) throws Exception {
+	public String historicalTrades(String symbol, int limit, int recvWindow) throws Exception {
 		Map<String, Object> params = Map.of(
 				"symbol", symbol,
 				"limit", limit,
@@ -67,42 +65,42 @@ public class Client extends BaseClient {
 	}
 
 	//	create_order
-	public JsonElement createOrder() throws Exception {
+	public String createOrder() throws Exception {
 		return this.call("create_order", null);
 	}
 
 	//	create_test_order
-	public JsonElement createTestOrder() throws Exception {
+	public String createTestOrder() throws Exception {
 		return this.call("create_test_order", null);
 	}
 
 	//	query_order
-	public JsonElement queryOrder() throws Exception {
+	public String queryOrder() throws Exception {
 		return this.call("query_order", null);
 	}
 
 	//	cancel_order
-	public JsonElement cancelOrder() throws Exception {
+	public String cancelOrder() throws Exception {
 		return this.call("cancel_order", null);
 	}
 
 	//	open_orders
-	public JsonElement openOrders() throws Exception {
+	public String openOrders() throws Exception {
 		return this.call("open_orders", null);
 	}
 
 	//	cancel_open_orders
-	public JsonElement cancelOpenOrders() throws Exception {
+	public String cancelOpenOrders() throws Exception {
 		return this.call("cancel_open_orders", null);
 	}
 
 	//	all_orders
-	public JsonElement allOrders() throws Exception {
+	public String allOrders() throws Exception {
 		return this.call("all_orders", null);
 	}
 
 	//	account_info
-	public JsonElement accountInfo(int recvWindow) throws Exception {
+	public String accountInfo(int recvWindow) throws Exception {
 		Map<String, Object> params = Map.of(
 				"recvWindow", recvWindow,
 				"timestamp", System.currentTimeMillis());
@@ -110,7 +108,7 @@ public class Client extends BaseClient {
 	}
 
 	//	funds_info
-	public JsonElement fundsInfo(int recvWindow) throws Exception {
+	public String fundsInfo(int recvWindow) throws Exception {
 		Map<String, Object> params = Map.of(
 				"recvWindow", recvWindow,
 				"timestamp", System.currentTimeMillis());
@@ -118,7 +116,7 @@ public class Client extends BaseClient {
 	}
 
 	//	create_auth_token
-	public JsonElement createAuthToken(int recvWindow) throws Exception {
+	public String createAuthToken(int recvWindow) throws Exception {
 		Map<String, Object> params = Map.of(
 				"recvWindow", recvWindow,
 				"timestamp", System.currentTimeMillis());
