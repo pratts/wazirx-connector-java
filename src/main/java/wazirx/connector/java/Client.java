@@ -65,11 +65,12 @@ public class Client extends BaseClient {
 		return this.call("historical_trades", params);
 	}
 
-	private Map<String, Object> getCreateOrderData(String symbolName, String type, Double quantity, Double price, Double stopPrice) throws Exception {
+	private Map<String, Object> getCreateOrderData(String symbolName, String side, String type, Double quantity, Double price, Double stopPrice) throws Exception {
 		if(type == null || !(type.equalsIgnoreCase("limit") || type.equalsIgnoreCase("stop_limit"))) {
 			throw new Exception("Invalid type provided");
 		}
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("side", side);
 		params.put("symbol", symbolName);
 		params.put("side", "buy");
 		params.put("type", type);
@@ -93,13 +94,13 @@ public class Client extends BaseClient {
 	}
 
 	//	create_order
-	public String createOrder(String symbolName, String type, Double quantity, Double price, Double stopPrice) throws Exception {
-		return this.call("create_order", this.getCreateOrderData(symbolName, type, quantity, price, stopPrice));
+	public String createOrder(String symbolName, String side, String type, Double quantity, Double price, Double stopPrice) throws Exception {
+		return this.call("create_order", this.getCreateOrderData(symbolName, side, type, quantity, price, stopPrice));
 	}
 
 	//	create_test_order
-	public String createTestOrder(String symbolName, String type, Double quantity, Double price, Double stopPrice) throws Exception {
-		return this.call("create_test_order", this.getCreateOrderData(symbolName, type, quantity, price, stopPrice));
+	public String createTestOrder(String symbolName, String side, String type, Double quantity, Double price, Double stopPrice) throws Exception {
+		return this.call("create_test_order", this.getCreateOrderData(symbolName, side, type, quantity, price, stopPrice));
 	}
 
 	//	query_order

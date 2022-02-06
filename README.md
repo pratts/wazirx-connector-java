@@ -52,6 +52,44 @@ client.fundsInfo()
 // Create authentication token for websocket connection
 client.createAuthToken()
 
+// Create order
+/*
+*	side : buy/sell
+*	type : limit/stop_limit
+*	In case of limit : quantity and price are mandatory
+*	In case of stop_limit : quantity, price and stopPrice are mandatory
+*/
+client.createOrder(symbolName, side, type, quantity, price, stopPrice);
+
+// Create test order - Same as client.createOrder but only validating the order
+client.createOrder(symbolName, type, quantity, price, stopPrice);
+
+// Query an order - Using orderId received from client.createOrder method
+client.queryOrder(orderId);
+
+// Open orders search
+/*
+*	symbolName : Optional. Can be null if search doesn't involve any symbol
+*	orderId : Optional. Can be null if search doesn't involve any orderId
+*/
+client.openOrders(symbolName, orderId)
+
+// All orders search
+/*
+*	symbolName : Mandatory.
+*	orderId : Optional. Can be null if search doesn't involve any orderId
+*	startTime : Optional. Can be null if search doesn't involve any startTime
+*	endTime : Optional. Can be null if search doesn't involve any endTime
+*	limit : Optional. Can be null if search doesn't involve any limit
+*/
+client.allOrders(symbolName, orderId, startTime, endTime, limit)
+
+// Cancel an order
+client.cancelOrder(symbolName, orderId)
+
+// Cancel All Open Orders on a Symbol
+client.cancelOpenOrders(symbolName)
+
 ```
 
 Note : Currently working on trading APIs
