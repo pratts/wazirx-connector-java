@@ -4,7 +4,9 @@ This is an unofficial Java wrapper for the Wazirx exchange REST API + Websocket 
 Wazirx Java connector is a set of helper methods to connecto with Wazirx.com platform via APIs and Websocket. 
 
 ## Usage:
-[Download the Wazirx Connector jar file](https://github.com/pratts/wazirx-connector-java/releases/tag/v1.0.0) and include it in your project
+Generate API KEY from Wazirx website using the https://wazirx.com/settings/keys
+
+[Download the Wazirx Connector jar file](https://github.com/pratts/wazirx-connector-java/releases/tag/v1.0.0) and include it in your project.
 
 ### API usage (All methods return JSON string as return type)
 ```
