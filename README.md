@@ -91,5 +91,3 @@ client.cancelOrder(symbolName, orderId)
 client.cancelOpenOrders(symbolName)
 
 ```
-
-Note : Currently working on trading APIs
