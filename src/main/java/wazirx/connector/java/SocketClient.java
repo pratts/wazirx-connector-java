@@ -7,8 +7,8 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import wazirx.connector.java.handlers.IMessageHandler;
 
@@ -52,8 +52,8 @@ public class SocketClient extends WebSocketClient {
 	}
 	
 	private JsonObject getAuthToken() throws Exception {
-		JsonElement authData = this.client.createAuthToken(60000);
-		JsonObject auth = authData.getAsJsonObject();
+		String authData = this.client.createAuthToken(60000);
+		JsonObject auth = JsonParser.parseString(authData).getAsJsonObject();
 		if(!auth.has("auth_key")) {
 			throw new Exception("No authentication token provided !");
 		}
