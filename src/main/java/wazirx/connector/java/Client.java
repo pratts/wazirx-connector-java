@@ -3,6 +3,7 @@
  */
 package wazirx.connector.java;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Client extends BaseClient {
@@ -68,12 +69,12 @@ public class Client extends BaseClient {
 		if(type == null || !(type.equalsIgnoreCase("limit") || type.equalsIgnoreCase("stop_limit"))) {
 			throw new Exception("Invalid type provided");
 		}
-		Map<String, Object> params = Map.of(
-				"symbol", symbolName,
-				"side", "buy",
-				"type", type,
-				"recvWindow", 10000,
-				"timestamp", System.currentTimeMillis());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("symbol", symbolName);
+		params.put("side", "buy");
+		params.put("type", type);
+		params.put("recvWindow", 10000);
+		params.put("timestamp", System.currentTimeMillis());
 		if(type.equalsIgnoreCase("limit")) {
 			if(quantity == null || price == null) {
 				throw new Exception("Both quantity and price should be non null");
@@ -112,9 +113,9 @@ public class Client extends BaseClient {
 
 	//	open_orders
 	public String openOrders(String symbolName, Long orderId) throws Exception {
-		Map<String, Object> params = Map.of(
-				"recvWindow", 60000,
-				"timestamp", System.currentTimeMillis());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("recvWindow", 60000);
+		params.put("timestamp", System.currentTimeMillis());
 		if(symbolName != null && symbolName.length() > 0) {
 			params.put("symbol", symbolName);
 		}
@@ -126,10 +127,10 @@ public class Client extends BaseClient {
 
 	//	all_orders
 	public String allOrders(String symbolName, Long orderId, Long startTime, Long endTime, Integer limit) throws Exception {
-		Map<String, Object> params = Map.of(
-				"symbol", symbolName,
-				"recvWindow", 60000,
-				"timestamp", System.currentTimeMillis());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("symbol", symbolName);
+		params.put("recvWindow", 60000);
+		params.put("timestamp", System.currentTimeMillis());
 		if(orderId != null) {
 			params.put("orderId", orderId);
 		}
