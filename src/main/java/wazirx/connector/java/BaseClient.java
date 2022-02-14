@@ -46,7 +46,7 @@ public class BaseClient {
 		apiDetails = this.readApiMapperJson();
 	}
 	
-	public Map<String, APIDetails> readApiMapperJson() {
+	private Map<String, APIDetails> readApiMapperJson() {
 		Map<String, APIDetails> apiDetails = null;
 	    try (Reader reader = new InputStreamReader(this.getClass().getResourceAsStream("/api_mapper.json"))) {
 	    	Type apiDetailsType = new TypeToken<Map<String, APIDetails>>() {}.getType();
@@ -58,11 +58,11 @@ public class BaseClient {
 		return apiDetails;
 	}
 
-	public APIDetails getAPIDetailsForName(String name) {
+	private APIDetails getAPIDetailsForName(String name) {
 		return this.apiDetails.get(name);
 	}
 	
-	public List<Header> getHeaders(String clientType) {
+	private List<Header> getHeaders(String clientType) {
 		List<Header> headersList = new ArrayList<Header>();
 		headersList.add(new BasicHeader("Content-Type", "application/x-www-form-urlencoded"));
 		if(clientType.equalsIgnoreCase("signed")) {
@@ -71,13 +71,13 @@ public class BaseClient {
 		return headersList;
 	}
 	
-	public String generateSignature(List<NameValuePair> params) {
+	private String generateSignature(List<NameValuePair> params) {
 		String encodedParams = this.getEncodedParams(params);
 		String hmac = new HmacUtils(HmacAlgorithms.HMAC_SHA_256, this.secretKey).hmacHex(encodedParams);
 	    return hmac;
 	}
 	
-	public List<NameValuePair> getValuePairs(Map<String, Object> params) {
+	private List<NameValuePair> getValuePairs(Map<String, Object> params) {
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		for(Map.Entry<String, Object> it: params.entrySet()) {
 			pairs.add(new BasicNameValuePair(it.getKey(), String.valueOf(it.getValue())));
@@ -85,7 +85,7 @@ public class BaseClient {
 		return pairs;
 	}
 	
-	public String getEncodedParams(List<NameValuePair> params) {
+	private String getEncodedParams(List<NameValuePair> params) {
 		return URLEncodedUtils.format(params, "UTF-8");
 	}
 	
@@ -123,7 +123,7 @@ public class BaseClient {
 		return headersArr;
 	}
 
-	public String get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	private String get(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
@@ -143,7 +143,7 @@ public class BaseClient {
 		}
 	}
 
-	public String post(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	private String post(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
@@ -161,7 +161,7 @@ public class BaseClient {
 		}
 	}
 
-	public String delete(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
+	private String delete(APIDetails detail, List<NameValuePair> params) throws IOException, URISyntaxException {
 		List<Header> headers = this.getHeaders(detail.getClient());
 		String url = this.BASE_URL + detail.getUrl();
 
