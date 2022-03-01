@@ -32,7 +32,7 @@ client.exchangeInfo();
 client.tickers();
 
 // 24hr ticker price change statistics for a symbol : here symbol name(example "btcinr" or one of the symbols from exchange info method)
-client.ticket(symbolName);
+client.ticker(symbolName);
 
 // Order book : limit value Valid limits:[1, 5, 10, 20, 50, 100, 500, 1000]
 client.depth(symbolName, limit)
