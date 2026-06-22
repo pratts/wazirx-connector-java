@@ -167,7 +167,7 @@ public class BaseClient {
 
 		try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpDelete request = new HttpDelete(url);
-            request.setHeaders((Header[])headers.toArray());
+            request.setHeaders(this.getHeaderArray(headers));
             URI uri = new URIBuilder(url+"?"+this.getEncodedParams(params)).build();
             request.setURI(uri);
             return httpclient.execute(request, new WazirxResponseHandler());

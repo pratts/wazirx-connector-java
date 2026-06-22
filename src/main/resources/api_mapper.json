@@ -33,7 +33,13 @@
 		"client": "public",
 		"action": "get",
 		"endpoint": "ticker",
-		"url": "/v1/depth"
+		"url": "/v1/ticker/24hr"
+	},
+	"klines": {
+		"client": "public",
+		"action": "get",
+		"endpoint": "klines",
+		"url": "/v1/klines"
 	},
 	"depth": {
 		"client": "public",
@@ -112,5 +118,53 @@
 		"action": "post",
 		"endpoint": "create_auth_token",
 		"url": "/v1/create_auth_token"
+	},
+	"my_trades": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "my_trades",
+		"url": "/v1/myTrades"
+	},
+	"coin_info": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "coin_info",
+		"url": "/v1/coins"
+	},
+	"withdraw_history": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "withdraw_history",
+		"url": "/v1/crypto/withdraws"
+	},
+	"deposit_address": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "deposit_address",
+		"url": "/v1/crypto/deposits/address"
+	},
+	"withdraw": {
+		"client": "signed",
+		"action": "post",
+		"endpoint": "withdraw",
+		"url": "/v1/crypto/withdraws"
+	},
+	"sub_account_transfer_history": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "sub_account_transfer_history",
+		"url": "/v1/sub_account/fund_transfer/history"
+	},
+	"sub_account_details": {
+		"client": "signed",
+		"action": "get",
+		"endpoint": "sub_account_details",
+		"url": "/v1/sub_account/accounts"
+	},
+	"sub_account_fund_transfer": {
+		"client": "signed",
+		"action": "post",
+		"endpoint": "sub_account_fund_transfer",
+		"url": "/v1/sub_account/fund_transfer"
 	}
 }

@@ -72,7 +72,6 @@ public class Client extends BaseClient {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("side", side);
 		params.put("symbol", symbolName);
-		params.put("side", "buy");
 		params.put("type", type);
 		params.put("recvWindow", 10000);
 		params.put("timestamp", System.currentTimeMillis());
@@ -188,5 +187,157 @@ public class Client extends BaseClient {
 				"recvWindow", 20000,
 				"timestamp", System.currentTimeMillis());
 		return this.call("create_auth_token", params);
+	}
+
+	//	klines
+	public String klines(String symbol, String interval, Integer limit, Long startTime, Long endTime) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("symbol", symbol);
+		params.put("interval", interval);
+		if (limit != null) {
+			params.put("limit", limit);
+		}
+		if (startTime != null) {
+			params.put("startTime", startTime);
+		}
+		if (endTime != null) {
+			params.put("endTime", endTime);
+		}
+		return this.call("klines", params);
+	}
+
+	//	my_trades
+	public String myTrades(String symbol, Long orderId, Long fromId, Long startTime, Long endTime, Integer limit) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("recvWindow", 60000);
+		params.put("timestamp", System.currentTimeMillis());
+		if (symbol != null && symbol.length() > 0) {
+			params.put("symbol", symbol);
+		}
+		if (orderId != null) {
+			params.put("orderId", orderId);
+		}
+		if (fromId != null) {
+			params.put("fromId", fromId);
+		}
+		if (startTime != null) {
+			params.put("startTime", startTime);
+		}
+		if (endTime != null) {
+			params.put("endTime", endTime);
+		}
+		if (limit != null) {
+			params.put("limit", limit);
+		}
+		return this.call("my_trades", params);
+	}
+
+	//	coin_info
+	public String coinInfo() throws Exception {
+		Map<String, Object> params = Map.of(
+				"recvWindow", 10000,
+				"timestamp", System.currentTimeMillis());
+		return this.call("coin_info", params);
+	}
+
+	//	withdraw_history
+	public String withdrawHistory(String coin, Integer transferType, Integer status, Long startTime, Long endTime, Integer offset, Integer limit) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("timestamp", System.currentTimeMillis());
+		if (coin != null && coin.length() > 0) {
+			params.put("coin", coin);
+		}
+		if (transferType != null) {
+			params.put("transferType", transferType);
+		}
+		if (status != null) {
+			params.put("status", status);
+		}
+		if (startTime != null) {
+			params.put("startTime", startTime);
+		}
+		if (endTime != null) {
+			params.put("endTime", endTime);
+		}
+		if (offset != null) {
+			params.put("offset", offset);
+		}
+		if (limit != null) {
+			params.put("limit", limit);
+		}
+		return this.call("withdraw_history", params);
+	}
+
+	//	deposit_address
+	public String depositAddress(String coin, String network) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("coin", coin);
+		params.put("network", network);
+		params.put("recvWindow", 10000);
+		params.put("timestamp", System.currentTimeMillis());
+		return this.call("deposit_address", params);
+	}
+
+	//	withdraw
+	public String withdraw(String coin, String address, String network, Double amount, String withdrawConsent, String withdrawOrderId) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("coin", coin);
+		params.put("address", address);
+		params.put("network", network);
+		params.put("amount", amount);
+		params.put("withdrawConsent", withdrawConsent);
+		params.put("timestamp", System.currentTimeMillis());
+		if (withdrawOrderId != null && withdrawOrderId.length() > 0) {
+			params.put("withdrawOrderId", withdrawOrderId);
+		}
+		return this.call("withdraw", params);
+	}
+
+	//	sub_account_transfer_history
+	public String subAccountTransferHistory(String fromEmail, String toEmail, String currency, Long fromTransactionId, Long startTime, Long endTime, Integer limit) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("recvWindow", 10000);
+		params.put("timestamp", System.currentTimeMillis());
+		if (fromEmail != null && fromEmail.length() > 0) {
+			params.put("fromEmail", fromEmail);
+		}
+		if (toEmail != null && toEmail.length() > 0) {
+			params.put("toEmail", toEmail);
+		}
+		if (currency != null && currency.length() > 0) {
+			params.put("currency", currency);
+		}
+		if (fromTransactionId != null) {
+			params.put("fromTransactionId", fromTransactionId);
+		}
+		if (startTime != null) {
+			params.put("startTime", startTime);
+		}
+		if (endTime != null) {
+			params.put("endTime", endTime);
+		}
+		if (limit != null) {
+			params.put("limit", limit);
+		}
+		return this.call("sub_account_transfer_history", params);
+	}
+
+	//	sub_account_details
+	public String subAccountDetails() throws Exception {
+		Map<String, Object> params = Map.of(
+				"timestamp", System.currentTimeMillis());
+		return this.call("sub_account_details", params);
+	}
+
+	//	sub_account_fund_transfer
+	public String subAccountFundTransfer(String fromEmail, String toEmail, String currency, Double amount) throws Exception {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("fromEmail", fromEmail);
+		params.put("toEmail", toEmail);
+		params.put("currency", currency);
+		params.put("amount", amount);
+		params.put("recvWindow", 10000);
+		params.put("timestamp", System.currentTimeMillis());
+		return this.call("sub_account_fund_transfer", params);
 	}
 }
