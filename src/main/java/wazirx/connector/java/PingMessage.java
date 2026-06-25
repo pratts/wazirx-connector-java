@@ -1,25 +1,33 @@
 package wazirx.connector.java;
 
-import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PingMessage implements Runnable {
-	private SocketClient socketClient = null;
-	public PingMessage(SocketClient client) {
-		System.out.println("Creating ping message thread");
-		this.socketClient = client;
-	}
+class PingMessage implements Runnable {
 
-	public void run() {
-		JsonObject pingMessage = new JsonObject();
-		pingMessage.addProperty("event", "ping");
-		while(this.socketClient.isSendPing()) {
-			System.out.println("Sending ping message: " + pingMessage.toString());
-			this.socketClient.send(pingMessage.toString());
-			try {
-				Thread.sleep(5 * 60 * 1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    private static final Logger log = LoggerFactory.getLogger(PingMessage.class);
+    private static final long PING_INTERVAL_MS = 5 * 60 * 1000L;
+    private static final String PING_PAYLOAD = "{\"event\":\"ping\"}";
+
+    private final SocketClient socketClient;
+
+    PingMessage(SocketClient client) {
+        this.socketClient = client;
+    }
+
+    @Override
+    public void run() {
+        log.debug("Ping thread started");
+        while (socketClient.isSendPing()) {
+            log.debug("Sending ping");
+            socketClient.send(PING_PAYLOAD);
+            try {
+                Thread.sleep(PING_INTERVAL_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+        log.debug("Ping thread stopped");
+    }
 }

@@ -3,11 +3,13 @@ package wazirx.connector.java;
 import org.junit.Assume;
 import org.junit.Test;
 
+import wazirx.connector.java.exception.WazirxClientException;
+
 import static org.junit.Assert.*;
 
 public class ClientTest {
 
-    private static final String API_KEY = System.getenv("WAZIRX_API_KEY");
+    private static final String API_KEY    = System.getenv("WAZIRX_API_KEY");
     private static final String API_SECRET = System.getenv("WAZIRX_API_SECRET");
 
     // -------------------------------------------------------------------------
@@ -15,7 +17,7 @@ public class ClientTest {
     // -------------------------------------------------------------------------
 
     @Test
-    public void testPing() throws Exception {
+    public void testPing() {
         Client client = new Client("", "");
         String response = client.ping();
         assertNotNull(response);
@@ -23,7 +25,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testTime() throws Exception {
+    public void testTime() {
         Client client = new Client("", "");
         String response = client.time();
         assertNotNull(response);
@@ -31,7 +33,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testSystemStatus() throws Exception {
+    public void testSystemStatus() {
         Client client = new Client("", "");
         String response = client.systemStatus();
         assertNotNull(response);
@@ -39,7 +41,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testExchangeInfo() throws Exception {
+    public void testExchangeInfo() {
         Client client = new Client("", "");
         String response = client.exchangeInfo();
         assertNotNull(response);
@@ -47,7 +49,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testTickers() throws Exception {
+    public void testTickers() {
         Client client = new Client("", "");
         String response = client.tickers();
         assertNotNull(response);
@@ -55,7 +57,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testTicker() throws Exception {
+    public void testTicker() {
         Client client = new Client("", "");
         String response = client.ticker("btcinr");
         assertNotNull(response);
@@ -63,7 +65,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testDepth() throws Exception {
+    public void testDepth() {
         Client client = new Client("", "");
         String response = client.depth("btcinr", 10);
         assertNotNull(response);
@@ -71,7 +73,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testTrades() throws Exception {
+    public void testTrades() {
         Client client = new Client("", "");
         String response = client.trades("btcinr", 10);
         assertNotNull(response);
@@ -79,7 +81,7 @@ public class ClientTest {
     }
 
     @Test
-    public void testKlines() throws Exception {
+    public void testKlines() {
         Client client = new Client("", "");
         String response = client.klines("btcinr", "1m", 5, null, null);
         assertNotNull(response);
@@ -90,28 +92,34 @@ public class ClientTest {
     // Parameter validation tests — no network call needed
     // -------------------------------------------------------------------------
 
-    @Test(expected = Exception.class)
-    public void testCreateOrderInvalidType() throws Exception {
-        Client client = new Client("key", "secret");
-        client.createOrder("btcinr", "buy", "market", 1.0, 100.0, null);
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderInvalidSide() {
+        new Client("key", "secret").createOrder("btcinr", "up", "limit", 1.0, 100.0, null);
     }
 
-    @Test(expected = Exception.class)
-    public void testCreateOrderLimitMissingPrice() throws Exception {
-        Client client = new Client("key", "secret");
-        client.createOrder("btcinr", "buy", "limit", 1.0, null, null);
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderNullSide() {
+        new Client("key", "secret").createOrder("btcinr", null, "limit", 1.0, 100.0, null);
     }
 
-    @Test(expected = Exception.class)
-    public void testCreateOrderLimitMissingQuantity() throws Exception {
-        Client client = new Client("key", "secret");
-        client.createOrder("btcinr", "buy", "limit", null, 100.0, null);
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderInvalidType() {
+        new Client("key", "secret").createOrder("btcinr", "buy", "market", 1.0, 100.0, null);
     }
 
-    @Test(expected = Exception.class)
-    public void testCreateOrderStopLimitMissingStopPrice() throws Exception {
-        Client client = new Client("key", "secret");
-        client.createOrder("btcinr", "buy", "stop_limit", 1.0, 100.0, null);
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderLimitMissingPrice() {
+        new Client("key", "secret").createOrder("btcinr", "buy", "limit", 1.0, null, null);
+    }
+
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderLimitMissingQuantity() {
+        new Client("key", "secret").createOrder("btcinr", "buy", "limit", null, 100.0, null);
+    }
+
+    @Test(expected = WazirxClientException.class)
+    public void testCreateOrderStopLimitMissingStopPrice() {
+        new Client("key", "secret").createOrder("btcinr", "buy", "stop_limit", 1.0, 100.0, null);
     }
 
     // -------------------------------------------------------------------------
@@ -120,73 +128,65 @@ public class ClientTest {
     // -------------------------------------------------------------------------
 
     @Test
-    public void testHistoricalTrades() throws Exception {
+    public void testHistoricalTrades() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.historicalTrades("btcinr", 10);
+        String response = new Client(API_KEY, API_SECRET).historicalTrades("btcinr", 10);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testAccountInfo() throws Exception {
+    public void testAccountInfo() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.accountInfo();
+        String response = new Client(API_KEY, API_SECRET).accountInfo();
         assertNotNull(response);
         assertTrue(response.contains("balances") || response.contains("assets"));
     }
 
     @Test
-    public void testFundsInfo() throws Exception {
+    public void testFundsInfo() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.fundsInfo();
+        String response = new Client(API_KEY, API_SECRET).fundsInfo();
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testCoinInfo() throws Exception {
+    public void testCoinInfo() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.coinInfo();
+        String response = new Client(API_KEY, API_SECRET).coinInfo();
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testOpenOrders() throws Exception {
+    public void testOpenOrders() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.openOrders(null, null);
+        String response = new Client(API_KEY, API_SECRET).openOrders(null, null);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testAllOrders() throws Exception {
+    public void testAllOrders() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.allOrders("btcinr", null, null, null, 10);
+        String response = new Client(API_KEY, API_SECRET).allOrders("btcinr", null, null, null, 10);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testMyTrades() throws Exception {
+    public void testMyTrades() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.myTrades("btcinr", null, null, null, null, 10);
+        String response = new Client(API_KEY, API_SECRET).myTrades("btcinr", null, null, null, null, 10);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
-    public void testSubAccountDetails() throws Exception {
+    public void testSubAccountDetails() {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        Client client = new Client(API_KEY, API_SECRET);
-        String response = client.subAccountDetails();
+        String response = new Client(API_KEY, API_SECRET).subAccountDetails();
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }

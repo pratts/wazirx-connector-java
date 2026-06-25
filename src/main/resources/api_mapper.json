@@ -2,169 +2,141 @@
 	"ping": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "ping",
 		"url": "/v1/ping"
 	},
 	"time": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "time",
 		"url": "/v1/time"
 	},
 	"system_status": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "time",
 		"url": "/v1/systemStatus"
 	},
 	"exchange_info": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "exchange_info",
 		"url": "/v1/exchangeInfo"
 	},
 	"tickers": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "tickers",
 		"url": "/v1/tickers/24hr"
 	},
 	"ticker": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "ticker",
 		"url": "/v1/ticker/24hr"
 	},
 	"klines": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "klines",
 		"url": "/v1/klines"
 	},
 	"depth": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "depth",
 		"url": "/v1/depth"
 	},
 	"trades": {
 		"client": "public",
 		"action": "get",
-		"endpoint": "trades",
 		"url": "/v1/trades"
 	},
 	"historical_trades": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "historical_trades",
 		"url": "/v1/historicalTrades"
 	},
 	"create_order": {
 		"client": "signed",
 		"action": "post",
-		"endpoint": "order",
 		"url": "/v1/order"
 	},
 	"create_test_order": {
 		"client": "signed",
 		"action": "post",
-		"endpoint": "test_order",
 		"url": "/v1/order/test"
 	},
 	"query_order": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "order",
 		"url": "/v1/order"
 	},
 	"cancel_order": {
 		"client": "signed",
 		"action": "delete",
-		"endpoint": "order",
 		"url": "/v1/order"
 	},
 	"open_orders": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "open_orders",
 		"url": "/v1/openOrders"
 	},
 	"cancel_open_orders": {
 		"client": "signed",
 		"action": "delete",
-		"endpoint": "open_orders",
 		"url": "/v1/openOrders"
 	},
 	"all_orders": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "all_orders",
 		"url": "/v1/allOrders"
 	},
 	"account_info": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "account",
 		"url": "/v1/account"
 	},
 	"funds_info": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "funds",
 		"url": "/v1/funds"
 	},
 	"create_auth_token": {
 		"client": "signed",
 		"action": "post",
-		"endpoint": "create_auth_token",
 		"url": "/v1/create_auth_token"
 	},
 	"my_trades": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "my_trades",
 		"url": "/v1/myTrades"
 	},
 	"coin_info": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "coin_info",
 		"url": "/v1/coins"
 	},
 	"withdraw_history": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "withdraw_history",
 		"url": "/v1/crypto/withdraws"
 	},
 	"deposit_address": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "deposit_address",
 		"url": "/v1/crypto/deposits/address"
 	},
 	"withdraw": {
 		"client": "signed",
 		"action": "post",
-		"endpoint": "withdraw",
 		"url": "/v1/crypto/withdraws"
 	},
 	"sub_account_transfer_history": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "sub_account_transfer_history",
 		"url": "/v1/sub_account/fund_transfer/history"
 	},
 	"sub_account_details": {
 		"client": "signed",
 		"action": "get",
-		"endpoint": "sub_account_details",
 		"url": "/v1/sub_account/accounts"
 	},
 	"sub_account_fund_transfer": {
 		"client": "signed",
 		"action": "post",
-		"endpoint": "sub_account_fund_transfer",
 		"url": "/v1/sub_account/fund_transfer"
 	}
 }
