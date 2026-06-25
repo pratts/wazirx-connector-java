@@ -1,6 +1,10 @@
 package wazirx.connector.java;
 
+import java.io.IOException;
+
+import org.junit.AfterClass;
 import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import wazirx.connector.java.exception.WazirxClientException;
@@ -12,84 +16,89 @@ public class ClientTest {
     private static final String API_KEY    = System.getenv("WAZIRX_API_KEY");
     private static final String API_SECRET = System.getenv("WAZIRX_API_SECRET");
 
+    // Shared across all public tests — one connection pool for the suite
+    private static Client publicClient;
+
+    @BeforeClass
+    public static void setUpClass() {
+        publicClient = new Client("", "");
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws IOException {
+        if (publicClient != null) publicClient.close();
+    }
+
     // -------------------------------------------------------------------------
     // Public API tests — no credentials required
     // -------------------------------------------------------------------------
 
     @Test
     public void testPing() {
-        Client client = new Client("", "");
-        String response = client.ping();
+        String response = publicClient.ping();
         assertNotNull(response);
         assertEquals("{}", response);
     }
 
     @Test
     public void testTime() {
-        Client client = new Client("", "");
-        String response = client.time();
+        String response = publicClient.time();
         assertNotNull(response);
         assertTrue(response.contains("serverTime"));
     }
 
     @Test
     public void testSystemStatus() {
-        Client client = new Client("", "");
-        String response = client.systemStatus();
+        String response = publicClient.systemStatus();
         assertNotNull(response);
         assertTrue(response.contains("status"));
     }
 
     @Test
     public void testExchangeInfo() {
-        Client client = new Client("", "");
-        String response = client.exchangeInfo();
+        String response = publicClient.exchangeInfo();
         assertNotNull(response);
         assertTrue(response.contains("symbols"));
     }
 
     @Test
     public void testTickers() {
-        Client client = new Client("", "");
-        String response = client.tickers();
+        String response = publicClient.tickers();
         assertNotNull(response);
         assertTrue(response.startsWith("["));
     }
 
     @Test
     public void testTicker() {
-        Client client = new Client("", "");
-        String response = client.ticker("btcinr");
+        String response = publicClient.ticker("btcinr");
         assertNotNull(response);
         assertTrue(response.contains("symbol"));
     }
 
     @Test
     public void testDepth() {
-        Client client = new Client("", "");
-        String response = client.depth("btcinr", 10);
+        String response = publicClient.depth("btcinr", 10);
         assertNotNull(response);
         assertTrue(response.contains("asks") || response.contains("bids"));
     }
 
     @Test
     public void testTrades() {
-        Client client = new Client("", "");
-        String response = client.trades("btcinr", 10);
+        String response = publicClient.trades("btcinr", 10);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     @Test
     public void testKlines() {
-        Client client = new Client("", "");
-        String response = client.klines("btcinr", "1m", 5, null, null);
+        String response = publicClient.klines("btcinr", "1m", 5, null, null);
         assertNotNull(response);
         assertFalse(response.isEmpty());
     }
 
     // -------------------------------------------------------------------------
-    // Parameter validation tests — no network call needed
+    // Parameter validation tests — exception thrown before any network call,
+    // so no connection pool is used and close() would be a no-op
     // -------------------------------------------------------------------------
 
     @Test(expected = WazirxClientException.class)
@@ -124,70 +133,86 @@ public class ClientTest {
 
     // -------------------------------------------------------------------------
     // Signed API tests — skipped unless WAZIRX_API_KEY / WAZIRX_API_SECRET
-    // environment variables are set
+    // environment variables are set. Each test owns its Client lifecycle.
     // -------------------------------------------------------------------------
 
     @Test
-    public void testHistoricalTrades() {
+    public void testHistoricalTrades() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).historicalTrades("btcinr", 10);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.historicalTrades("btcinr", 10);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testAccountInfo() {
+    public void testAccountInfo() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).accountInfo();
-        assertNotNull(response);
-        assertTrue(response.contains("balances") || response.contains("assets"));
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.accountInfo();
+            assertNotNull(response);
+            assertTrue(response.contains("balances") || response.contains("assets"));
+        }
     }
 
     @Test
-    public void testFundsInfo() {
+    public void testFundsInfo() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).fundsInfo();
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.fundsInfo();
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testCoinInfo() {
+    public void testCoinInfo() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).coinInfo();
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.coinInfo();
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testOpenOrders() {
+    public void testOpenOrders() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).openOrders(null, null);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.openOrders(null, null);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testAllOrders() {
+    public void testAllOrders() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).allOrders("btcinr", null, null, null, 10);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.allOrders("btcinr", null, null, null, 10);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testMyTrades() {
+    public void testMyTrades() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).myTrades("btcinr", null, null, null, null, 10);
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.myTrades("btcinr", null, null, null, null, 10);
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 
     @Test
-    public void testSubAccountDetails() {
+    public void testSubAccountDetails() throws IOException {
         Assume.assumeNotNull(API_KEY, API_SECRET);
-        String response = new Client(API_KEY, API_SECRET).subAccountDetails();
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
+        try (Client client = new Client(API_KEY, API_SECRET)) {
+            String response = client.subAccountDetails();
+            assertNotNull(response);
+            assertFalse(response.isEmpty());
+        }
     }
 }

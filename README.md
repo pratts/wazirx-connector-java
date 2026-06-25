@@ -38,16 +38,22 @@ gradle build
 
 Generate your API key and secret from the [WazirX API settings page](https://wazirx.com/settings/keys).
 
+`Client` implements `Closeable` and holds an HTTP connection pool. Use try-with-resources to ensure it is shut down cleanly:
+
 ```java
 import wazirx.connector.java.Client;
 
-Client client = new Client("your_api_key", "your_api_secret");
+try (Client client = new Client("your_api_key", "your_api_secret")) {
+    String response = client.ping();
+}
 ```
 
 For public endpoints (no auth required), empty strings are fine:
 
 ```java
-Client client = new Client("", "");
+try (Client client = new Client("", "")) {
+    String tickers = client.tickers();
+}
 ```
 
 ---
@@ -142,7 +148,7 @@ client.cancelOrder("btcinr", orderId);
 client.cancelOpenOrders("btcinr");
 
 // My trades
-// All parameters except none are optional — pass null to omit
+// All parameters are optional — pass null to omit
 // symbol, orderId, fromId, startTime, endTime, limit
 client.myTrades("btcinr", null, null, null, null, 50);
 client.myTrades(null, orderId, null, null, null, null);
@@ -247,6 +253,48 @@ socket.subToOwnTrade();
 
 ```java
 socket.unsubscribe(new String[]{"btcinr@trades"}, false);
+```
+
+---
+
+## Error Handling
+
+All methods throw unchecked exceptions — no forced `try/catch` at every call site.
+
+| Exception | When thrown |
+|---|---|
+| `WazirxClientException` | Invalid parameters (bad `side`, missing required field, unknown endpoint) |
+| `WazirxApiException` | Network failure or a non-2xx HTTP response from the API |
+
+`WazirxClientException` extends `WazirxApiException`, so you can catch either depending on how granular you need to be:
+
+```java
+import wazirx.connector.java.exception.WazirxApiException;
+import wazirx.connector.java.exception.WazirxClientException;
+
+try (Client client = new Client(apiKey, apiSecret)) {
+    String result = client.createOrder("btcinr", "buy", "limit", 0.001, 2500000.0, null);
+} catch (WazirxClientException e) {
+    // bad parameters — fix the call
+    System.err.println("Invalid request: " + e.getMessage());
+} catch (WazirxApiException e) {
+    // network error or API rejected the request (response body included in message)
+    System.err.println("API error: " + e.getMessage());
+}
+```
+
+---
+
+## Logging
+
+The library uses [SLF4J](https://www.slf4j.org/) for logging and ships with no binding. Add a binding to your project to see log output, or add `slf4j-nop` to silence the startup warning:
+
+```groovy
+// Logback (recommended)
+implementation 'ch.qos.logback:logback-classic:1.5.18'
+
+// Or silence all logging
+implementation 'org.slf4j:slf4j-nop:2.0.16'
 ```
 
 ---
